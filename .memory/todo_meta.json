@@ -1,0 +1,41 @@
+{
+  "todos": {
+    "Coordinator": {
+      "8": {
+        "id": "8",
+        "content": "Add 💧 Water Tracker feature",
+        "details": "1. Create water_log database table with user_id, date, amount_ml, timestamp\n2. Build water intake logging interface with quick-add buttons (250ml, 500ml, 750ml, custom)\n3. Add daily/weekly water goal tracking with progress bars\n4. Create water consumption charts and trends\n5. Add hydration reminders and daily targets\n6. Integrate with overall health dashboard",
+        "status": "completed",
+        "priority": "high"
+      },
+      "9": {
+        "id": "9",
+        "content": "Implement 🏅 Achievements & Streaks System",
+        "details": "1. Create achievements database table with achievement types, criteria, and rewards\n2. Build streak tracking for workouts, sleep, diet, and water intake\n3. Implement achievement badges (7-day workout streak, 30-day sleep consistency, etc.)\n4. Add progress indicators and milestone celebrations\n5. Create achievements dashboard with unlocked/locked badges\n6. Add streak recovery suggestions and motivation features",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "10": {
+        "id": "10",
+        "content": "Build 💪 Health Score system",
+        "details": "1. Create health_score calculation algorithm based on sleep, nutrition, exercise, and hydration\n2. Implement weighted scoring system (Sleep: 25%, Exercise: 25%, Nutrition: 25%, Water: 25%)\n3. Add Health Score display on dashboard with color-coded indicators\n4. Create historical Health Score trends and improvements\n5. Add personalized recommendations based on Health Score patterns\n6. Include Health Score in monthly summaries",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "11": {
+        "id": "11",
+        "content": "Create 📅 Monthly Summary + Export functionality",
+        "details": "1. Build comprehensive monthly overview page with all health metrics\n2. Create PDF export functionality with charts, stats, and achievements\n3. Add CSV export for raw data export\n4. Implement month-over-month comparison charts\n5. Add monthly health insights and recommendations\n6. Create shareable monthly health reports\n7. Include goal progress tracking for the month",
+        "status": "completed",
+        "priority": "medium"
+      },
+      "12": {
+        "id": "12",
+        "content": "Add 🧘 Mood Tracker feature",
+        "details": "1. Create mood_logs database table with user_id, date, mood_level (1-10), energy_level, stress_level, notes\n2. Build mood tracking interface with emoji picker and quick mood selection\n3. Add mood correlation analysis with sleep, exercise, and nutrition\n4. Create mood trend charts and patterns analysis\n5. Implement mood-based recommendations and insights\n6. Add mood history and pattern recognition features",
+        "status": "completed",
+        "priority": "medium"
+      }
+    }
+  }
+}
