@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nepal Food Database Setup</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+        }
+        h1 {
+            color: #1a202c;
+            font-size: 28px;
+            margin-bottom: 12px;
+        }
+        .subtitle {
+            color: #718096;
+            margin-bottom: 32px;
+            font-size: 16px;
+        }
+        .step {
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px;
+        }
+        .step-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 8px;
+        }
+        .step-content {
+            color: #4a5568;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        button {
+            width: 100%;
+            padding: 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 24px;
+        }
+        button:hover {
+            background: #5a67d8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+        #status {
+            margin-top: 24px;
+            padding: 16px;
+            border-radius: 8px;
+            display: none;
+        }
+        .status-loading {
+            background: #edf2f7;
+            color: #2d3748;
+            display: block !important;
+        }
+        .status-success {
+            background: #c6f6d5;
+            color: #22543d;
+            display: block !important;
+        }
+        .status-error {
+            background: #fed7d7;
+            color: #742a2a;
+            display: block !important;
+        }
+        .log {
+            margin-top: 8px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            background: white;
+            padding: 12px;
+            border-radius: 4px;
+        }
+        .log-item {
+            margin-bottom: 4px;
+        }
+        .success-icon { color: #38a169; }
+        .error-icon { color: #e53e3e; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nepal Food Database Setup</h1>
+        <p class="subtitle">Initialize the MyHealthMate Nepal Food Database with one click</p>
+        
+        <div class="step">
+            <div class="step-title">What this will do:</div>
+            <div class="step-content">
+                This setup will populate your Supabase database with:
+                <br>• 25 common Nepal foods (Rice, Dal, Momo, Chapati, etc.)
+                <br>• 35 portion mappings (1 cup, 1 bowl, 1 plate sizes)
+                <br>• 12 exercise MET values for calorie calculations
+            </div>
+        </div>
+
+        <div class="step">
+            <div class="step-title">Requirements:</div>
+            <div class="step-content">
+                The database tables must already exist. If you haven't created them yet, run the SQL script from NEPAL_FOOD_DB_SETUP.md in your Supabase SQL Editor first.
+            </div>
+        </div>
+
+        <button id="initButton" onclick="initializeDatabase()">Initialize Nepal Food Database</button>
+
+        <div id="status"></div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://dkkikobakypwldmnjxir.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRra2lrb2Jha3lwd2xkbW5qeGlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjIxMjkzNDksImV4cCI6MjA3NzcwNTM0OX0.NvPgQifIpZ_dVzMoSznmkivj4GQ2O5UPDFpyt2xA_Wg';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function updateStatus(type, message, logs = []) {
+            const status = document.getElementById('status');
+            status.className = `status-${type}`;
+            
+            let html = `<div>${message}</div>`;
+            if (logs.length > 0) {
+                html += '<div class="log">';
+                logs.forEach(log => {
+                    const icon = log.success ? '✓' : '✗';
+                    const iconClass = log.success ? 'success-icon' : 'error-icon';
+                    html += `<div class="log-item"><span class="${iconClass}">${icon}</span> ${log.message}</div>`;
+                });
+                html += '</div>';
+            }
+            
+            status.innerHTML = html;
+        }
+
+        async function initializeDatabase() {
+            const button = document.getElementById('initButton');
+            button.disabled = true;
+            
+            updateStatus('loading', 'Initializing database...', []);
+            
+            const logs = [];
+            
+            try {
+                // Nepal Foods Data
+                const nepalFoods = [
+                    { food_name: 'Rice (cooked)', calories_per_100g: 130, protein_per_100g: 2.7, fat_per_100g: 0.3, carbs_per_100g: 28, fiber_per_100g: 0.4 },
+                    { food_name: 'Dal (cooked)', calories_per_100g: 116, protein_per_100g: 9, fat_per_100g: 0.4, carbs_per_100g: 20, fiber_per_100g: 8 },
+                    { food_name: 'Momo (steamed)', calories_per_100g: 250, protein_per_100g: 12, fat_per_100g: 8, carbs_per_100g: 35, fiber_per_100g: 2 },
+                    { food_name: 'Chapati', calories_per_100g: 290, protein_per_100g: 8, fat_per_100g: 4, carbs_per_100g: 55, fiber_per_100g: 3 },
+                    { food_name: 'Chicken curry', calories_per_100g: 165, protein_per_100g: 25, fat_per_100g: 6, carbs_per_100g: 2, fiber_per_100g: 0.5 },
+                    { food_name: 'Aloo curry', calories_per_100g: 90, protein_per_100g: 2, fat_per_100g: 3, carbs_per_100g: 15, fiber_per_100g: 2 },
+                    { food_name: 'Saag (spinach)', calories_per_100g: 30, protein_per_100g: 3, fat_per_100g: 2, carbs_per_100g: 4, fiber_per_100g: 2.2 },
+                    { food_name: 'Buffalo meat', calories_per_100g: 240, protein_per_100g: 26, fat_per_100g: 14, carbs_per_100g: 0, fiber_per_100g: 0 },
+                    { food_name: 'Dhedo', calories_per_100g: 350, protein_per_100g: 7, fat_per_100g: 1, carbs_per_100g: 75, fiber_per_100g: 3 },
+                    { food_name: 'Bajra', calories_per_100g: 364, protein_per_100g: 11, fat_per_100g: 5, carbs_per_100g: 63, fiber_per_100g: 8 },
+                    { food_name: 'Sel roti', calories_per_100g: 350, protein_per_100g: 6, fat_per_100g: 15, carbs_per_100g: 48, fiber_per_100g: 1 },
+                    { food_name: 'Gundruk', calories_per_100g: 50, protein_per_100g: 4, fat_per_100g: 0.5, carbs_per_100g: 9, fiber_per_100g: 6 },
+                    { food_name: 'Samosa', calories_per_100g: 262, protein_per_100g: 4, fat_per_100g: 13, carbs_per_100g: 32, fiber_per_100g: 2 },
+                    { food_name: 'Puri', calories_per_100g: 375, protein_per_100g: 6, fat_per_100g: 23, carbs_per_100g: 37, fiber_per_100g: 1.5 },
+                    { food_name: 'Yogurt (dahi)', calories_per_100g: 60, protein_per_100g: 3.5, fat_per_100g: 3.3, carbs_per_100g: 4.7, fiber_per_100g: 0 },
+                    { food_name: 'Paneer', calories_per_100g: 265, protein_per_100g: 18, fat_per_100g: 20, carbs_per_100g: 3, fiber_per_100g: 0 },
+                    { food_name: 'Egg (boiled)', calories_per_100g: 155, protein_per_100g: 13, fat_per_100g: 11, carbs_per_100g: 1.1, fiber_per_100g: 0 },
+                    { food_name: 'Banana', calories_per_100g: 89, protein_per_100g: 1.1, fat_per_100g: 0.3, carbs_per_100g: 23, fiber_per_100g: 2.6 },
+                    { food_name: 'Apple', calories_per_100g: 52, protein_per_100g: 0.3, fat_per_100g: 0.2, carbs_per_100g: 14, fiber_per_100g: 2.4 },
+                    { food_name: 'Milk (full fat)', calories_per_100g: 61, protein_per_100g: 3.2, fat_per_100g: 3.3, carbs_per_100g: 4.8, fiber_per_100g: 0 },
+                    { food_name: 'Kheer', calories_per_100g: 150, protein_per_100g: 4, fat_per_100g: 5, carbs_per_100g: 22, fiber_per_100g: 0.5 },
+                    { food_name: 'Jalebi', calories_per_100g: 400, protein_per_100g: 3, fat_per_100g: 16, carbs_per_100g: 62, fiber_per_100g: 0.5 },
+                    { food_name: 'Roti', calories_per_100g: 270, protein_per_100g: 7, fat_per_100g: 3, carbs_per_100g: 52, fiber_per_100g: 3 },
+                    { food_name: 'Papad', calories_per_100g: 360, protein_per_100g: 20, fat_per_100g: 2, carbs_per_100g: 60, fiber_per_100g: 7 },
+                    { food_name: 'Achar (pickle)', calories_per_100g: 65, protein_per_100g: 1, fat_per_100g: 4, carbs_per_100g: 7, fiber_per_100g: 2 },
+                ];
+
+                // Insert foods
+                const { data: foodData, error: foodError } = await supabase
+                    .from('nepal_food_composition')
+                    .upsert(nepalFoods, { onConflict: 'food_name', ignoreDuplicates: false });
+
+                if (foodError) {
+                    if (foodError.message.includes('relation') && foodError.message.includes('does not exist')) {
+                        throw new Error('Tables do not exist. Please create tables first using the SQL script.');
+                    }
+                    throw foodError;
+                }
+                logs.push({ success: true, message: `Inserted ${nepalFoods.length} Nepal foods` });
+
+                // Portion mappings
+                const portions = [
+                    { food_name: 'Rice (cooked)', portion_name: '1 cup', grams: 210 },
+                    { food_name: 'Rice (cooked)', portion_name: '1 bowl', grams: 300 },
+                    { food_name: 'Rice (cooked)', portion_name: '1 plate', grams: 200 },
+                    { food_name: 'Dal (cooked)', portion_name: '1 bowl', grams: 200 },
+                    { food_name: 'Dal (cooked)', portion_name: '1 cup', grams: 150 },
+                    { food_name: 'Momo (steamed)', portion_name: '1 plate (6 pieces)', grams: 200 },
+                    { food_name: 'Momo (steamed)', portion_name: '1 piece', grams: 33 },
+                    { food_name: 'Chapati', portion_name: '1 piece', grams: 45 },
+                    { food_name: 'Chicken curry', portion_name: '1 serving', grams: 150 },
+                    { food_name: 'Chicken curry', portion_name: '1 bowl', grams: 200 },
+                    { food_name: 'Aloo curry', portion_name: '1 serving', grams: 150 },
+                    { food_name: 'Aloo curry', portion_name: '1 bowl', grams: 200 },
+                    { food_name: 'Saag (spinach)', portion_name: '1 serving', grams: 100 },
+                    { food_name: 'Saag (spinach)', portion_name: '1 bowl', grams: 150 },
+                    { food_name: 'Buffalo meat', portion_name: '1 serving', grams: 120 },
+                    { food_name: 'Buffalo meat', portion_name: '1 piece', grams: 100 },
+                    { food_name: 'Dhedo', portion_name: '1 serving', grams: 200 },
+                    { food_name: 'Dhedo', portion_name: '1 bowl', grams: 250 },
+                    { food_name: 'Bajra', portion_name: '1 serving', grams: 100 },
+                    { food_name: 'Bajra', portion_name: '1 cup', grams: 150 },
+                    { food_name: 'Sel roti', portion_name: '1 piece', grams: 50 },
+                    { food_name: 'Gundruk', portion_name: '1 serving', grams: 100 },
+                    { food_name: 'Samosa', portion_name: '1 piece', grams: 80 },
+                    { food_name: 'Puri', portion_name: '1 piece', grams: 40 },
+                    { food_name: 'Yogurt (dahi)', portion_name: '1 cup', grams: 240 },
+                    { food_name: 'Paneer', portion_name: '1 serving', grams: 100 },
+                    { food_name: 'Egg (boiled)', portion_name: '1 egg', grams: 50 },
+                    { food_name: 'Banana', portion_name: '1 medium', grams: 118 },
+                    { food_name: 'Apple', portion_name: '1 medium', grams: 182 },
+                    { food_name: 'Milk (full fat)', portion_name: '1 glass', grams: 240 },
+                    { food_name: 'Kheer', portion_name: '1 bowl', grams: 150 },
+                    { food_name: 'Jalebi', portion_name: '1 piece', grams: 30 },
+                    { food_name: 'Roti', portion_name: '1 piece', grams: 40 },
+                    { food_name: 'Papad', portion_name: '1 piece', grams: 15 },
+                    { food_name: 'Achar (pickle)', portion_name: '1 tablespoon', grams: 15 },
+                ];
+
+                // Delete existing portions first to avoid duplicates
+                const { error: deleteError } = await supabase
+                    .from('food_portions')
+                    .delete()
+                    .neq('id', '00000000-0000-0000-0000-000000000000'); // Delete all
+
+                const { data: portionData, error: portionError } = await supabase
+                    .from('food_portions')
+                    .insert(portions);
+
+                if (portionError) throw portionError;
+                logs.push({ success: true, message: `Inserted ${portions.length} portion mappings` });
+
+                // Exercise MET values
+                const exercises = [
+                    { activity_name: 'Walking (3 mph)', met: 3.3, category: 'Light' },
+                    { activity_name: 'Running (6 mph)', met: 9.8, category: 'Vigorous' },
+                    { activity_name: 'Cycling (moderate)', met: 6.0, category: 'Moderate' },
+                    { activity_name: 'Yoga', met: 2.5, category: 'Light' },
+                    { activity_name: 'Dancing', met: 6.5, category: 'Moderate' },
+                    { activity_name: 'Swimming (moderate)', met: 6.0, category: 'Moderate' },
+                    { activity_name: 'Weight training', met: 5.0, category: 'Moderate' },
+                    { activity_name: 'Hiking', met: 6.0, category: 'Moderate' },
+                    { activity_name: 'Basketball', met: 6.5, category: 'Vigorous' },
+                    { activity_name: 'Football', met: 7.0, category: 'Vigorous' },
+                    { activity_name: 'Cricket', met: 5.0, category: 'Moderate' },
+                    { activity_name: 'Volleyball', met: 4.0, category: 'Moderate' },
+                ];
+
+                const { data: exerciseData, error: exerciseError } = await supabase
+                    .from('exercise_met_values')
+                    .upsert(exercises, { onConflict: 'activity_name', ignoreDuplicates: false });
+
+                if (exerciseError) throw exerciseError;
+                logs.push({ success: true, message: `Inserted ${exercises.length} exercise MET values` });
+
+                updateStatus('success', 'Database initialized successfully!', logs);
+                
+                setTimeout(() => {
+                    window.location.href = 'https://wjlueryzzjcl.space.minimax.io';
+                }, 3000);
+
+            } catch (error) {
+                logs.push({ success: false, message: error.message });
+                updateStatus('error', 'Initialization failed. See details below:', logs);
+                button.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

@@ -386,14 +386,14 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
-        <p className="text-gray-600">Welcome back! Here's your health summary for today.</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p className="text-sm sm:text-base text-gray-600">Welcome back! Here's your health summary for today.</p>
       </motion.div>
 
       {/* Health Score */}
@@ -401,42 +401,42 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className={`mb-8 rounded-xl shadow-sm p-6 border ${healthScoreStyle.bg} border-gray-100`}
+        className={`mb-6 sm:mb-8 rounded-xl shadow-sm p-4 sm:p-6 border ${healthScoreStyle.bg} border-gray-100`}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center">
-            <Heart className={`w-8 h-8 ${healthScoreStyle.color} mr-4`} />
+            <Heart className={`w-6 h-6 sm:w-8 sm:h-8 ${healthScoreStyle.color} mr-3 sm:mr-4`} />
             <div>
-              <h2 className="text-lg font-semibold text-gray-900">Today's Health Score</h2>
-              <p className={`text-sm font-medium ${healthScoreStyle.color}`}>{healthScoreStyle.label}</p>
+              <h2 className="text-base sm:text-lg font-semibold text-gray-900">Today's Health Score</h2>
+              <p className={`text-xs sm:text-sm font-medium ${healthScoreStyle.color}`}>{healthScoreStyle.label}</p>
             </div>
           </div>
-          <div className="text-right">
-            <p className={`text-5xl font-bold ${healthScoreStyle.color}`}>{stats.healthScore}</p>
-            <p className="text-sm text-gray-500">out of 100</p>
+          <div className="text-center sm:text-right">
+            <p className={`text-4xl sm:text-5xl font-bold ${healthScoreStyle.color}`}>{stats.healthScore}</p>
+            <p className="text-xs sm:text-sm text-gray-500">out of 100</p>
           </div>
         </div>
       </motion.div>
 
       {/* Quick Actions: Water & Mood */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Water Widget */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.15 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <Droplet className="w-6 h-6 text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Water Intake</h3>
+              <Droplet className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2" />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Water Intake</h3>
             </div>
-            <a href="/water" className="text-sm text-blue-600 hover:underline">
+            <a href="/water" className="text-xs sm:text-sm text-blue-600 hover:underline min-h-[44px] flex items-center">
               View Details
             </a>
           </div>
-          <div className="relative w-full h-4 bg-gray-200 rounded-full overflow-hidden mb-2">
+          <div className="relative w-full h-3 sm:h-4 bg-gray-200 rounded-full overflow-hidden mb-2">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${waterProgress}%` }}
@@ -444,7 +444,7 @@ export default function Dashboard() {
               className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
             />
           </div>
-          <p className="text-sm text-gray-600">
+          <p className="text-xs sm:text-sm text-gray-600">
             {stats.todayWaterIntake}ml / {stats.waterGoal}ml ({Math.round(waterProgress)}%)
           </p>
         </motion.div>
@@ -454,53 +454,53 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <Smile className="w-6 h-6 text-yellow-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Today's Mood</h3>
+              <Smile className="w-5 h-5 sm:w-6 sm:h-6 text-yellow-600 mr-2" />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Today's Mood</h3>
             </div>
-            <a href="/mood" className="text-sm text-blue-600 hover:underline">
+            <a href="/mood" className="text-xs sm:text-sm text-blue-600 hover:underline min-h-[44px] flex items-center">
               {stats.todayMood ? 'Update' : 'Log Mood'}
             </a>
           </div>
           {stats.todayMood ? (
             <div className="flex justify-around">
               <div className="text-center">
-                <p className="text-sm text-gray-600">Mood</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.todayMood.mood_level}/10</p>
+                <p className="text-xs sm:text-sm text-gray-600">Mood</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.todayMood.mood_level}/10</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-600">Energy</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.todayMood.energy_level}/10</p>
+                <p className="text-xs sm:text-sm text-gray-600">Energy</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.todayMood.energy_level}/10</p>
               </div>
               <div className="text-center">
-                <p className="text-sm text-gray-600">Stress</p>
-                <p className="text-2xl font-bold text-gray-900">{stats.todayMood.stress_level}/10</p>
+                <p className="text-xs sm:text-sm text-gray-600">Stress</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">{stats.todayMood.stress_level}/10</p>
               </div>
             </div>
           ) : (
-            <p className="text-gray-500 text-center py-4">No mood logged today</p>
+            <p className="text-sm text-gray-500 text-center py-4">No mood logged today</p>
           )}
         </motion.div>
       </div>
 
       {/* Todo & Notes Widgets */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         {/* Todos Widget */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.25 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <CheckSquare className="w-6 h-6 text-blue-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Pending Tasks</h3>
+              <CheckSquare className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600 mr-2" />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Pending Tasks</h3>
             </div>
-            <a href="/todos" className="text-sm text-blue-600 hover:underline">
+            <a href="/todos" className="text-xs sm:text-sm text-blue-600 hover:underline min-h-[44px] flex items-center">
               View All
             </a>
           </div>
@@ -539,14 +539,14 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <FileText className="w-6 h-6 text-purple-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Recent Notes</h3>
+              <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600 mr-2" />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Recent Notes</h3>
             </div>
-            <a href="/notes" className="text-sm text-blue-600 hover:underline">
+            <a href="/notes" className="text-xs sm:text-sm text-blue-600 hover:underline min-h-[44px] flex items-center">
               View All
             </a>
           </div>
@@ -574,14 +574,14 @@ export default function Dashboard() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35 }}
-          className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-8"
+          className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100 mb-6 sm:mb-8"
         >
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center">
-              <TrendingUp className="w-6 h-6 text-green-600 mr-2" />
-              <h3 className="text-lg font-semibold text-gray-900">Today's Habits</h3>
+              <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-green-600 mr-2" />
+              <h3 className="text-base sm:text-lg font-semibold text-gray-900">Today's Habits</h3>
             </div>
-            <a href="/habits" className="text-sm text-blue-600 hover:underline">
+            <a href="/habits" className="text-xs sm:text-sm text-blue-600 hover:underline min-h-[44px] flex items-center">
               View All
             </a>
           </div>
@@ -611,7 +611,7 @@ export default function Dashboard() {
       )}
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6 mb-6 sm:mb-8">
         {statCards.map((card, index) => {
           const Icon = card.icon;
           return (
@@ -620,17 +620,17 @@ export default function Dashboard() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.25 + index * 0.1 }}
-              className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+              className="bg-white rounded-xl shadow-sm p-3 sm:p-6 border border-gray-100"
             >
               <div className="flex items-start justify-between mb-4">
                 <div className={`p-3 rounded-lg ${card.bg}`}>
                   <Icon className={`w-6 h-6 ${card.color}`} />
                 </div>
               </div>
-              <h3 className="text-sm font-medium text-gray-600 mb-1">{card.title}</h3>
-              <p className="text-3xl font-bold text-gray-900">
+              <h3 className="text-xs sm:text-sm font-medium text-gray-600 mb-1">{card.title}</h3>
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900">
                 {card.value}
-                <span className="text-sm font-normal text-gray-500 ml-2">{card.unit}</span>
+                <span className="text-xs sm:text-sm font-normal text-gray-500 ml-1 sm:ml-2">{card.unit}</span>
               </p>
             </motion.div>
           );
@@ -642,13 +642,13 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.65 }}
-        className="bg-white rounded-xl shadow-sm p-6 border border-gray-100"
+        className="bg-white rounded-xl shadow-sm p-4 sm:p-6 border border-gray-100"
       >
-        <div className="flex items-center mb-6">
-          <TrendingUp className="w-5 h-5 text-blue-600 mr-2" />
-          <h2 className="text-xl font-bold text-gray-900">7-Day Calorie Trend</h2>
+        <div className="flex items-center mb-4 sm:mb-6">
+          <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mr-2" />
+          <h2 className="text-lg sm:text-xl font-bold text-gray-900">7-Day Calorie Trend</h2>
         </div>
-        <ResponsiveContainer width="100%" height={300}>
+        <ResponsiveContainer width="100%" height={250} className="sm:h-[300px]">
           <LineChart data={calorieData}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="date" />
@@ -675,10 +675,10 @@ export default function Dashboard() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.7 }}
-        className="mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-100"
+        className="mt-4 sm:mt-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-100"
       >
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">Weekly Averages</h3>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-4">Weekly Averages</h3>
+        <div className="grid grid-cols-2 gap-4">
           <div>
             <p className="text-sm text-gray-600">Average Sleep</p>
             <p className="text-2xl font-bold text-gray-900">{stats.avgSleepHours} hrs</p>

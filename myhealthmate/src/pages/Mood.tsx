@@ -212,13 +212,13 @@ export default function Mood() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Mood Tracker</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Mood Tracker</h1>
         <p className="text-gray-600">Track your emotional well-being and identify patterns</p>
       </motion.div>
 
@@ -260,7 +260,7 @@ export default function Mood() {
         </div>
 
         {todayMood && !showForm ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="text-center p-6 bg-yellow-50 rounded-lg">
               <Smile className="w-8 h-8 text-yellow-600 mx-auto mb-3" />
               <p className="text-sm text-gray-600 mb-2">Mood</p>
@@ -451,7 +451,7 @@ export default function Mood() {
                       <div className="flex gap-2">
                         <button
                           type="submit"
-                          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
+                          className="px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium"
                         >
                           Save
                         </button>
@@ -521,7 +521,7 @@ export default function Mood() {
                           onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
                           rows={2}
                           placeholder="How were you feeling?"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                       </div>
                     </div>

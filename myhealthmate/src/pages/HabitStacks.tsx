@@ -271,20 +271,20 @@ export default function HabitStacks() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Habit Stacks</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Habit Stacks</h1>
             <p className="text-gray-600">Group habits into routines for efficient tracking.</p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="flex items-center px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
           >
             <Plus className="w-5 h-5 mr-2" />
             Create Stack
@@ -487,7 +487,7 @@ export default function HabitStacks() {
       </AnimatePresence>
 
       {/* Stacks List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
         {stacks.length === 0 ? (
           <div className="col-span-full bg-white rounded-xl shadow-sm p-12 border border-gray-100 text-center">
             <Layers className="w-16 h-16 text-gray-300 mx-auto mb-4" />

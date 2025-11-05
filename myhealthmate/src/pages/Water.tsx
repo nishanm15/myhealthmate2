@@ -228,13 +228,13 @@ export default function Water() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Water Tracker</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Water Tracker</h1>
         <p className="text-gray-600">Stay hydrated! Track your daily water intake.</p>
       </motion.div>
 
@@ -284,18 +284,19 @@ export default function Water() {
         </div>
 
         {/* Custom Amount */}
-        <div className="flex gap-3">
+        <div className="flex gap-2">
           <input
             type="number"
             value={customAmount}
             onChange={(e) => setCustomAmount(e.target.value)}
             placeholder="Custom amount (ml)"
-            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 min-w-0 px-3 sm:px-4 py-2 min-h-[44px] text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <button
             onClick={handleCustomAdd}
             disabled={!customAmount}
-            className="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
+            className="px-3 sm:px-4 py-2 min-h-[48px] min-w-[48px] bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors flex-shrink-0 flex items-center justify-center"
+            aria-label="Add custom water amount"
           >
             <Plus className="w-5 h-5" />
           </button>

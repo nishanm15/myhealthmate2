@@ -19,6 +19,7 @@ import Monthly from '@/pages/Monthly';
 import Analytics from '@/pages/Analytics';
 import Profile from '@/pages/Profile';
 
+
 function App() {
   return (
     <AuthProvider>
@@ -48,6 +49,7 @@ function App() {
             <Route path="monthly" element={<Monthly />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />
+
           </Route>
         </Routes>
       </BrowserRouter>

@@ -121,9 +121,9 @@ export default function Profile() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
-        <h1 className="text-3xl font-bold text-gray-900 mb-2">Profile</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Profile</h1>
         <p className="text-gray-600">Manage your personal information and health metrics</p>
       </motion.div>
 

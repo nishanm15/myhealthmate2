@@ -158,15 +158,15 @@ export default function Sleep() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Sleep Tracker</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Sleep Tracker</h1>
           <p className="text-gray-600">Track your sleep patterns and quality</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          className="flex items-center px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           <Plus className="w-5 h-5 mr-2" />
           Log Sleep
@@ -186,14 +186,14 @@ export default function Sleep() {
               {editingId ? 'Edit Sleep Log' : 'Add New Sleep Log'}
             </h3>
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Sleep Start</label>
                   <input
                     type="datetime-local"
                     value={formData.sleep_start}
                     onChange={(e) => setFormData({ ...formData, sleep_start: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
@@ -203,7 +203,7 @@ export default function Sleep() {
                     type="datetime-local"
                     value={formData.sleep_end}
                     onChange={(e) => setFormData({ ...formData, sleep_end: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
@@ -218,14 +218,14 @@ export default function Sleep() {
               <div className="flex gap-3">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   {editingId ? 'Update' : 'Add'} Log
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
@@ -236,7 +236,7 @@ export default function Sleep() {
       </AnimatePresence>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         <div className="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
           <div className="flex items-center justify-between mb-4">
             <div className="p-3 bg-indigo-50 rounded-lg">
@@ -244,7 +244,7 @@ export default function Sleep() {
             </div>
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Average Sleep</h3>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             {Math.round(avgSleep * 10) / 10}
             <span className="text-sm font-normal text-gray-500 ml-2">hrs</span>
           </p>
@@ -257,7 +257,7 @@ export default function Sleep() {
             </div>
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Last Night</h3>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             {sleepLogs.length > 0 ? sleepLogs[0].duration : 0}
             <span className="text-sm font-normal text-gray-500 ml-2">hrs</span>
           </p>
@@ -270,7 +270,7 @@ export default function Sleep() {
             </div>
           </div>
           <h3 className="text-sm font-medium text-gray-600 mb-1">Sleep Quality</h3>
-          <p className="text-3xl font-bold text-gray-900">
+          <p className="text-2xl sm:text-3xl font-bold text-gray-900">
             {avgSleep >= 7 ? 'Good' : avgSleep >= 6 ? 'Fair' : 'Poor'}
           </p>
         </div>
@@ -297,7 +297,7 @@ export default function Sleep() {
 
       {/* Sleep Logs List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-gray-900">Sleep History</h2>
         </div>
         <div className="divide-y divide-gray-100">

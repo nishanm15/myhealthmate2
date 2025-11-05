@@ -177,15 +177,15 @@ export default function Achievements() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Achievements & Streaks</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Achievements & Streaks</h1>
             <p className="text-gray-600">Track your progress and celebrate your milestones!</p>
           </div>
           <button
@@ -199,7 +199,7 @@ export default function Achievements() {
       </motion.div>
 
       {/* Streak Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         {streakCards.map((card, index) => {
           const Icon = card.icon;
           const info = getStreakInfo(card.type);
@@ -217,7 +217,7 @@ export default function Achievements() {
                 </div>
               </div>
               <h3 className="text-sm font-medium text-gray-600 mb-1">{card.label}</h3>
-              <p className="text-3xl font-bold text-gray-900 mb-2">
+              <p className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 {info.current}
                 <span className="text-sm font-normal text-gray-500 ml-2">days</span>
               </p>
@@ -237,7 +237,7 @@ export default function Achievements() {
           className="bg-white rounded-xl shadow-sm p-6 border border-gray-100 mb-6"
         >
           <h2 className="text-xl font-bold text-gray-900 mb-6">{getTypeLabel(type)}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {achs.map((achievement) => {
               const status = getAchievementStatus(achievement);
               return (

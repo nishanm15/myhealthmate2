@@ -5,6 +5,8 @@ import { supabase } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Calendar, Target } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import UnifiedFoodSearch from '@/components/UnifiedFoodSearch';
+
 
 interface Meal {
   id: string;
@@ -22,6 +24,7 @@ export default function Diet() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+
   const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -37,6 +40,8 @@ export default function Diet() {
       fetchMeals();
     }
   }, [user]);
+
+
 
   const fetchMeals = async () => {
     if (!user) return;
@@ -100,6 +105,13 @@ export default function Diet() {
       fat: meal.fat.toString(),
     });
     setShowForm(true);
+    // Auto-scroll to form
+    setTimeout(() => {
+      const formElement = document.querySelector('form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
   };
 
   const handleDelete = async (id: string) => {
@@ -113,6 +125,28 @@ export default function Diet() {
     if (!error) {
       await fetchMeals();
     }
+  };
+
+  const handleFoodSelect = (nutritionData: any) => {
+    setFormData({
+      date: formData.date,
+      food_name: nutritionData.name,
+      calories: nutritionData.calories.toString(),
+      protein: nutritionData.protein.toString(),
+      carbs: nutritionData.carbs.toString(),
+      fat: nutritionData.fats.toString(),
+    });
+    // Auto-scroll to form and focus on first field
+    setTimeout(() => {
+      const formElement = document.querySelector('form');
+      if (formElement) {
+        formElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 100);
+  };
+
+  const handleManualEntry = () => {
+    setShowManualEntry(true);
   };
 
   const resetForm = () => {
@@ -157,15 +191,15 @@ export default function Diet() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Diet Tracker</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Diet Tracker</h1>
           <p className="text-gray-600">Track your meals and nutrition</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          className="flex items-center px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Meal
@@ -184,15 +218,31 @@ export default function Diet() {
             <h3 className="text-lg font-semibold mb-4">
               {editingId ? 'Edit Meal' : 'Add New Meal'}
             </h3>
+
+            {/* Unified Food Search - Always visible */}
+            <div className="mb-6">
+              <UnifiedFoodSearch
+                onFoodSelect={handleFoodSelect}
+              />
+            </div>
+
+            {/* Manual Entry Form - Always visible for editing/custom entry */}
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {formData.food_name && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Selected Food:</strong> {formData.food_name}
+                  </p>
+                </div>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
                   <input
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
                   />
                 </div>
@@ -202,7 +252,7 @@ export default function Diet() {
                     type="text"
                     value={formData.food_name}
                     onChange={(e) => setFormData({ ...formData, food_name: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="e.g., Chicken Salad"
                     required
                   />
@@ -215,7 +265,7 @@ export default function Diet() {
                     type="number"
                     value={formData.calories}
                     onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="300"
                     required
                     min="0"
@@ -228,7 +278,7 @@ export default function Diet() {
                     step="0.1"
                     value={formData.protein}
                     onChange={(e) => setFormData({ ...formData, protein: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="25"
                     required
                     min="0"
@@ -241,7 +291,7 @@ export default function Diet() {
                     step="0.1"
                     value={formData.carbs}
                     onChange={(e) => setFormData({ ...formData, carbs: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="30"
                     required
                     min="0"
@@ -254,7 +304,7 @@ export default function Diet() {
                     step="0.1"
                     value={formData.fat}
                     onChange={(e) => setFormData({ ...formData, fat: e.target.value })}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="10"
                     required
                     min="0"
@@ -264,19 +314,21 @@ export default function Diet() {
               <div className="flex gap-3">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   {editingId ? 'Update' : 'Add'} Meal
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
               </div>
             </form>
+
+
           </motion.div>
         )}
       </AnimatePresence>
@@ -350,7 +402,7 @@ export default function Diet() {
 
       {/* Meals List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-gray-900">Recent Meals</h2>
         </div>
         <div className="divide-y divide-gray-100">

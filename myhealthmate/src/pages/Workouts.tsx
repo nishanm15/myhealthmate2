@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { Plus, Edit2, Trash2, Calendar, Clock, Flame } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import AdvancedExerciseSearch from '@/components/AdvancedExerciseSearch';
 
 interface Workout {
   id: string;
@@ -19,6 +20,8 @@ export default function Workouts() {
   const [workouts, setWorkouts] = useState<Workout[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [showManualEntry, setShowManualEntry] = useState(false);
+  const [userWeight, setUserWeight] = useState(70);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -30,8 +33,23 @@ export default function Workouts() {
   useEffect(() => {
     if (user) {
       fetchWorkouts();
+      fetchUserWeight();
     }
   }, [user]);
+
+  const fetchUserWeight = async () => {
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('weight')
+      .eq('id', user.id)
+      .single();
+
+    if (!error && data?.weight) {
+      setUserWeight(data.weight);
+    }
+  };
 
   const fetchWorkouts = async () => {
     if (!user) return;
@@ -106,6 +124,16 @@ export default function Workouts() {
     }
   };
 
+  const handleExerciseSelect = (data: any) => {
+    setFormData({
+      date: formData.date,
+      type: data.type,
+      duration: data.duration.toString(),
+      calories: data.calories.toString(),
+    });
+    setShowManualEntry(true);
+  };
+
   const resetForm = () => {
     setFormData({
       date: new Date().toISOString().split('T')[0],
@@ -115,6 +143,7 @@ export default function Workouts() {
     });
     setEditingId(null);
     setShowForm(false);
+    setShowManualEntry(false);
   };
 
   // Weekly summary data
@@ -153,15 +182,15 @@ export default function Workouts() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <div className="flex items-center justify-between mb-8">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Workout Tracker</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Workout Tracker</h1>
           <p className="text-gray-600">Track your exercise sessions and calories burned</p>
         </div>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+          className="flex items-center px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Workout
@@ -180,34 +209,55 @@ export default function Workouts() {
             <h3 className="text-lg font-semibold mb-4">
               {editingId ? 'Edit Workout' : 'Add New Workout'}
             </h3>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+
+            {/* Advanced Exercise Search - Only show if not editing and not in manual entry mode */}
+            {!editingId && !showManualEntry && (
+              <div className="mb-6">
+                <AdvancedExerciseSearch
+                  onExerciseSelect={handleExerciseSelect}
+                  userWeight={userWeight}
+                />
+              </div>
+            )}
+
+            {/* Manual Entry Form - Show when editing, or when user selects manual entry, or when workout is calculated */}
+            {(editingId || showManualEntry) && (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {showManualEntry && !editingId && (
+                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg flex justify-between items-center">
+                  <p className="text-sm text-blue-800">
+                    Exercise selected. Review and adjust values before saving.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setShowManualEntry(false)}
+                    className="text-sm text-blue-600 hover:text-blue-700 underline"
+                  >
+                    Change Exercise
+                  </button>
+                </div>
+              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
                 <input
                   type="date"
                   value={formData.date}
                   onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Type</label>
-                <select
+                <input
+                  type="text"
                   value={formData.type}
                   onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="e.g., Walking, Running"
                   required
-                >
-                  <option value="">Select type</option>
-                  <option value="Cardio">Cardio</option>
-                  <option value="Strength">Strength</option>
-                  <option value="Yoga">Yoga</option>
-                  <option value="Swimming">Swimming</option>
-                  <option value="Cycling">Cycling</option>
-                  <option value="Running">Running</option>
-                  <option value="Other">Other</option>
-                </select>
+                />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">Duration (min)</label>
@@ -215,7 +265,7 @@ export default function Workouts() {
                   type="number"
                   value={formData.duration}
                   onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="30"
                   required
                   min="1"
@@ -227,28 +277,30 @@ export default function Workouts() {
                   type="number"
                   value={formData.calories}
                   onChange={(e) => setFormData({ ...formData, calories: e.target.value })}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 py-3 min-h-[44px] text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="200"
                   required
                   min="1"
                 />
               </div>
-              <div className="md:col-span-4 flex gap-3">
+              </div>
+              <div className="flex gap-3">
                 <button
                   type="submit"
-                  className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
                 >
                   {editingId ? 'Update' : 'Add'} Workout
                 </button>
                 <button
                   type="button"
                   onClick={resetForm}
-                  className="px-6 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
+                  className="px-6 py-3 min-h-[48px] bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition-colors"
                 >
                   Cancel
                 </button>
               </div>
             </form>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
@@ -269,7 +321,7 @@ export default function Workouts() {
 
       {/* Workouts List */}
       <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-        <div className="p-6 border-b border-gray-100">
+        <div className="p-4 sm:p-6 border-b border-gray-100">
           <h2 className="text-xl font-bold text-gray-900">Recent Workouts</h2>
         </div>
         <div className="divide-y divide-gray-100">

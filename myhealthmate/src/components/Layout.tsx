@@ -22,6 +22,9 @@ import {
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import MobileBottomNav from './MobileBottomNav';
+import MobileFAB from './MobileFAB';
+import { useSwipeNavigation } from '@/hooks/use-swipe-navigation';
 
 const navItems = [
   { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
@@ -45,6 +48,9 @@ export default function Layout() {
   const { signOut } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  
+  // Enable swipe navigation on mobile
+  useSwipeNavigation();
 
   const handleSignOut = async () => {
     await signOut();
@@ -62,7 +68,7 @@ export default function Layout() {
           </div>
         </div>
 
-        <nav className="flex-1 p-4 space-y-1">
+        <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -94,32 +100,47 @@ export default function Layout() {
         </div>
       </aside>
 
-      {/* Mobile Header */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
-        <div className="flex items-center justify-between p-4">
+      {/* Mobile Header - Sticky */}
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <div className="flex items-center justify-between p-4 min-h-[60px]">
           <div className="flex items-center">
             <Activity className="w-6 h-6 text-blue-600 mr-2" />
             <h1 className="text-lg font-bold text-gray-900">MyHealthMate</h1>
           </div>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 rounded-lg hover:bg-gray-100"
+            className="p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 min-w-[44px] min-h-[44px] flex items-center justify-center"
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Backdrop */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
-            initial={{ x: -300 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setMobileMenuOpen(false)}
+            className="lg:hidden fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Mobile Sidebar Menu */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ x: -320 }}
             animate={{ x: 0 }}
-            exit={{ x: -300 }}
-            className="lg:hidden fixed top-16 left-0 bottom-0 z-40 w-64 bg-white border-r border-gray-200"
+            exit={{ x: -320 }}
+            transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+            className="lg:hidden fixed top-[60px] left-0 bottom-0 z-50 w-80 max-w-[85vw] bg-white border-r border-gray-200 shadow-xl"
           >
-            <nav className="p-4 space-y-1">
+            <nav className="p-4 space-y-1 overflow-y-auto h-[calc(100%-80px)]">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const isActive = location.pathname === item.path;
@@ -128,10 +149,10 @@ export default function Layout() {
                     key={item.path}
                     to={item.path}
                     onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center px-4 py-3 rounded-lg transition-colors ${
+                    className={`flex items-center px-4 py-3 rounded-lg transition-colors min-h-[48px] ${
                       isActive
                         ? 'bg-blue-50 text-blue-600'
-                        : 'text-gray-700 hover:bg-gray-100'
+                        : 'text-gray-700 hover:bg-gray-100 active:bg-gray-200'
                     }`}
                   >
                     <Icon className="w-5 h-5 mr-3" />
@@ -140,10 +161,10 @@ export default function Layout() {
                 );
               })}
             </nav>
-            <div className="p-4 border-t border-gray-200">
+            <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200 bg-white">
               <button
                 onClick={handleSignOut}
-                className="flex items-center px-4 py-3 w-full rounded-lg text-gray-700 hover:bg-gray-100 transition-colors"
+                className="flex items-center px-4 py-3 w-full rounded-lg text-gray-700 hover:bg-gray-100 active:bg-gray-200 transition-colors min-h-[48px]"
               >
                 <LogOut className="w-5 h-5 mr-3" />
                 <span className="font-medium">Sign Out</span>
@@ -154,9 +175,15 @@ export default function Layout() {
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 overflow-auto pt-16 lg:pt-0">
+      <main className="flex-1 overflow-auto pt-[60px] pb-20 lg:pt-0 lg:pb-0">
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
+
+      {/* Mobile Floating Action Button */}
+      <MobileFAB />
     </div>
   );
 }

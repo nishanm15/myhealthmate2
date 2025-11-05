@@ -149,20 +149,20 @@ export default function Notes() {
   }
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
+    <div className="p-4 sm:p-6 max-w-7xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="mb-8"
+        className="mb-6 sm:mb-8"
       >
         <div className="flex items-center justify-between mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Notes</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Notes</h1>
             <p className="text-gray-600">Keep track of your health insights and reflections.</p>
           </div>
           <button
             onClick={() => setShowAddForm(true)}
-            className="flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
+            className="flex items-center px-4 py-2 min-h-[44px] bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
           >
             <Plus className="w-5 h-5 mr-2" />
             New Note
@@ -191,7 +191,7 @@ export default function Notes() {
 
         {/* Search and Filter */}
         <div className="bg-white rounded-xl shadow-sm p-4 border border-gray-100 mb-6">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4">
             <div className="flex-1 relative">
               <Search className="w-5 h-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
               <input
@@ -199,19 +199,19 @@ export default function Notes() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search notes..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-10 pr-4 py-2 min-h-[44px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
             <div className="flex items-center gap-2">
-              <Filter className="w-5 h-5 text-gray-600" />
+              <Filter className="w-5 h-5 text-gray-600 flex-shrink-0" />
               <select
                 value={filterCategory}
                 onChange={(e) => setFilterCategory(e.target.value)}
-                className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-4 py-2 min-h-[44px] border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 w-full sm:w-auto"
               >
-                <option>All</option>
+                <option value="All">All Categories</option>
                 {CATEGORIES.map(cat => (
-                  <option key={cat}>{cat}</option>
+                  <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
             </div>
@@ -287,17 +287,17 @@ export default function Notes() {
                   />
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                   <button
                     onClick={editingNote ? updateNote : addNote}
                     disabled={!formData.title || !formData.content}
-                    className="flex-1 px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
+                    className="flex-1 px-6 py-3 min-h-[48px] bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
                   >
                     {editingNote ? 'Update Note' : 'Save Note'}
                   </button>
                   <button
                     onClick={resetForm}
-                    className="px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-colors"
+                    className="px-6 py-3 min-h-[48px] border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg font-medium transition-colors"
                   >
                     Cancel
                   </button>
@@ -309,7 +309,7 @@ export default function Notes() {
       </AnimatePresence>
 
       {/* Notes Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredNotes.length === 0 ? (
           <div className="col-span-full bg-white rounded-xl shadow-sm p-12 border border-gray-100 text-center">
             <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
