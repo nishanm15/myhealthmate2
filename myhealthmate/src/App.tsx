@@ -12,7 +12,8 @@ import Mood from '@/pages/Mood';
 import Habits from '@/pages/Habits';
 import HabitStacks from '@/pages/HabitStacks';
 import Todos from '@/pages/Todos';
-
+import WeightTracking from '@/pages/WeightTracking';
+import Journal from '@/pages/Journal';
 import Notes from '@/pages/Notes';
 import Achievements from '@/pages/Achievements';
 import Monthly from '@/pages/Monthly';
@@ -44,6 +45,8 @@ function App() {
             <Route path="habits" element={<Habits />} />
             <Route path="habit-stacks" element={<HabitStacks />} />
             <Route path="todos" element={<Todos />} />
+            <Route path="weight" element={<WeightTracking />} />
+            <Route path="journal" element={<Journal />} />
             <Route path="notes" element={<Notes />} />
             <Route path="achievements" element={<Achievements />} />
             <Route path="monthly" element={<Monthly />} />

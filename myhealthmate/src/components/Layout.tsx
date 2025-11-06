@@ -18,7 +18,9 @@ import {
   CheckSquare,
   FileText,
   TrendingUp,
-  Layers
+  Layers,
+  Scale,
+  BookOpen
 } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -32,6 +34,8 @@ const navItems = [
   { path: '/diet', icon: Apple, label: 'Diet' },
   { path: '/sleep', icon: Moon, label: 'Sleep' },
   { path: '/water', icon: Droplet, label: 'Water' },
+  { path: '/weight', icon: Scale, label: 'Weight' },
+  { path: '/journal', icon: BookOpen, label: 'Journal' },
   { path: '/mood', icon: Smile, label: 'Mood' },
   { path: '/habits', icon: TrendingUp, label: 'Habits' },
   { path: '/habit-stacks', icon: Layers, label: 'Habit Stacks' },
